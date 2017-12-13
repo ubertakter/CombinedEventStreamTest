@@ -1,17 +1,8 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package combinedeventstreamtest;
 
 import java.util.Objects;
 import java.util.Optional;
 
-/**
- *
- * @author bwhitworth
- */
 public abstract class ChangeBase<T> implements UndoChange {
    protected final T oldValue, newValue;
    protected final DataModel model;
