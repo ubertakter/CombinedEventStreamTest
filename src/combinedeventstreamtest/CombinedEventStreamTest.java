@@ -45,7 +45,7 @@ public class CombinedEventStreamTest extends Application {
       UndoManager<UndoChange> um = UndoManagerFactory.unlimitedHistoryUndoManager(
               bothStream, 
               c -> c.invert(), 
-              c -> c.redo(),
+              c -> bothStream.suspendWhile(c::redo),
               (c1, c2) -> c1.mergeWith(c2)
       );
 
@@ -67,13 +67,13 @@ public class CombinedEventStreamTest extends Application {
       
       //generate new A and B
       Button bothButton = new Button("A and B change");
-      bothButton.setOnAction(event -> {
-         System.out.println("A+B change button action: "+model);
-      });
+//      bothButton.setOnAction(event -> {
+//         System.out.println("A+B change button action: "+model);
+//      });
       EventStreams.eventsOf(bothButton, ActionEvent.ACTION)
               .suspenderOf(bothStream)
               .subscribe((ActionEvent event) ->{
-                 System.out.println("stream action");
+                 System.out.println("A+B Button Action in event stream");
                   model.setA(Math.random()*10.0);
                   model.setB(Math.random()*10.0);                 
               });
@@ -84,7 +84,7 @@ public class CombinedEventStreamTest extends Application {
       undoButton.disableProperty().bind(um.undoAvailableProperty().map(x -> !x));
       redoButton.disableProperty().bind(um.redoAvailableProperty().map(x -> !x));
       undoButton.setOnAction(event -> {
-         System.out.println("undo "+model);              
+         System.out.println("undo "+model);          
          um.undo();
       });
       redoButton.setOnAction(event -> {
